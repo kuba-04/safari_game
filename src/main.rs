@@ -23,6 +23,9 @@ impl Default for GameState {
 fn main() {
     let mut game = Game::<GameState>::new();
 
+    game.audio_manager
+        .play_music(MusicPreset::WhimsicalPopsicle, 0.2);
+
     let player = game.add_sprite("player", SpritePreset::RacingCarBlue);
     player.translation = Vec2::new(0.0, 0.0);
     player.scale = 1.0;
