@@ -1,3 +1,4 @@
+use rand::prelude::*;
 use rusty_engine::prelude::*;
 
 #[derive(Resource)]
@@ -6,7 +7,7 @@ struct GameState {
     score: u32,
     target_index: i32,
     // enemy_labels: Vec<String>,
-    // spawn_timer: Timer,
+    spawn_timer: Timer,
 }
 
 impl Default for GameState {
@@ -15,7 +16,7 @@ impl Default for GameState {
             high_score: 0,
             score: 0,
             target_index: 0,
-            // spawn_timer: Timer::from_seconds(1.0, TimerMode::Once),
+            spawn_timer: Timer::from_seconds(1.0, TimerMode::Repeating),
         }
     }
 }
@@ -91,6 +92,16 @@ fn game_logic(engine: &mut Engine, game_state: &mut GameState) {
             zebra.collision = true;
             zebra.scale = 0.1;
         }
+    }
+
+    if game_state.spawn_timer.tick(engine.delta).just_finished() {
+        let label = format!("zebra_{}", game_state.target_index);
+        game_state.target_index += 1;
+        let zebra = engine.add_sprite(label.clone(), "sprite/custom/zebra.png");
+        zebra.translation.x = thread_rng().gen_range(-550.0..550.0);
+        zebra.translation.y = thread_rng().gen_range(-325.0..325.0);
+        zebra.collision = true;
+        zebra.scale = 0.1;
     }
 
     if engine.keyboard_state.just_pressed(KeyCode::R) {
